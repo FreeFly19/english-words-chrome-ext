@@ -1,0 +1,37 @@
+{
+  "name": "Context Menus Sample (with Event Page)",
+  "description": "Shows some of the features of the Context Menus API using an event page",
+  "version": "0.7",
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*",
+    "contextMenus",
+    "webNavigation",
+    "notifications",
+    "cookies"
+  ],
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "js": [
+        "pageContent.js"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*",
+        "file:///*",
+        "file://*"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "background": {
+    "persistent": false,
+    "scripts": [
+      "sample.js"
+    ]
+  },
+  "manifest_version": 2
+}
