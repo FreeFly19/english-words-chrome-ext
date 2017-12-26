@@ -18,8 +18,9 @@ window.addEventListener("DOMContentLoaded", function () {
 
         const xhr = new XMLHttpRequest();
 
-        xhr.open("GET", "https://localhost/plugin?translate=" + getSelectionText());
-        xhr.send();
+        xhr.open("PUT", "https://freefly.life/translate");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify({word: getSelectionText()}));
         xhr.onreadystatechange = function () {
             if (xhr.readyState !== 4) return;
             el.innerHTML = xhr.responseText;
