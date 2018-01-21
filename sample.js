@@ -13,7 +13,7 @@ chrome.contextMenus.onClicked.addListener(onClickHandler);
 
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
-        "title": "Translate FreeFly 2",
+        "title": "Translate",
         "contexts": ["selection"],
         "id": "selection-context"
     });
