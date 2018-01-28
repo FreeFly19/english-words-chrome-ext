@@ -3,40 +3,56 @@
         document.body.addEventListener('dblclick', dblClickHandler);
     });
 
-    function createPopupElement(e, translations) {
-        const width = 300;
-        let el = document.createElement("div");
-        el.style.position = "absolute";
-        el.style.top = e.pageY + 10 + "px";
-        el.style.left = e.pageX - (width / 2) + "px";
-        el.style.width = width + "px";
-        el.style.minHeight = "50px";
-        el.style.background = "white";
-        el.style.border = "1px solid black";
-        el.style.zIndex = "99999";
+    class TranslationModal {
 
-        el.innerHTML = translations;
-        return el;
+        constructor(xPos, yPos, parentElement = document.body, width = 300, minHeight = 50) {
+            this.modalElement = document.createElement("div");
+
+            this.modalElement.style.position = "absolute";
+            this.modalElement.style.zIndex = "99999";
+
+            this.modalElement.style.width = width + "px";
+            this.modalElement.style.minHeight = minHeight + "px";
+
+            this.modalElement.style.background = "white";
+            this.modalElement.style.border = "1px solid black";
+
+            this.modalElement.style.top = yPos + 10 + "px";
+            this.modalElement.style.left = xPos - (width / 2) + "px";
+
+            parentElement.appendChild(this.modalElement);
+            parentElement.addEventListener('click', e => this._destroy(e, parentElement));
+        }
+
+        addTranslations(translations) {
+            const ol = document.createElement("ol");
+            translations.forEach(tr => {
+                const li = document.createElement("li");
+                li.innerText = tr.value;
+                ol.appendChild(li);
+            });
+            this.modalElement.appendChild(ol);
+        }
+
+
+        _destroy(e, parentElement) {
+            if (e.path.indexOf(this.modalElement) === -1) {
+                this.modalElement.remove();
+                parentElement.removeEventListener('click', this._destroy);
+            }
+        }
     }
 
     function dblClickHandler(e) {
         let textToTranslate = getSelectionText();
         if (!textToTranslate || !e.altKey) return;
 
+        const modal = new TranslationModal(e.pageX, e.pageY);
+
         translate(textToTranslate)
-            .then(
-                translations => {
-                    const el = createPopupElement(e, translations);
-                    document.body.appendChild(el);
-                    document.body.addEventListener('click', function remover() {
-                        if (e.path.indexOf(el) === -1) {
-                            el.remove();
-                            document.body.removeEventListener('click', remover);
-                        }
-                    });
-                },
-                err => console.log('Error!', err)
-            );
+            .then(translations => {
+                modal.addTranslations(translations);
+            });
     }
 
 
@@ -50,7 +66,7 @@
             xhr.onreadystatechange = () => {
                 if (xhr.readyState !== 4) return;
                 if (xhr.status >= 200 && xhr.status < 300) {
-                    resolve(xhr.responseText);
+                    resolve(JSON.parse(xhr.responseText));
                 } else {
                     reject(xhr);
                 }
