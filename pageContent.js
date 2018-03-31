@@ -59,7 +59,7 @@
         const modal = new TranslationModal(e.pageX, e.pageY);
 
         translate(textToTranslate)
-            .then(translations => {
+            .then(({translations}) => {
                 modal.addTranslations(translations);
                 modal.allTranslationsHaveBeenAdded();
             });
@@ -70,9 +70,9 @@
         return new Promise(function (resolve, reject) {
             const xhr = new XMLHttpRequest();
 
-            xhr.open("PUT", "https://freefly.life/translate");
+            xhr.open("PUT", "https://freefly.life/api/phrases");
             xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(JSON.stringify({word: textToTranslate}));
+            xhr.send(JSON.stringify({phrase: textToTranslate}));
             xhr.onreadystatechange = () => {
                 if (xhr.readyState !== 4) return;
                 if (xhr.status >= 200 && xhr.status < 300) {
