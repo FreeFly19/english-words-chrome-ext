@@ -70,7 +70,7 @@
         return new Promise(function (resolve, reject) {
             const xhr = new XMLHttpRequest();
 
-            xhr.open("PUT", "https://freefly.life/api/phrases");
+            xhr.open("POST", "https://freefly.life/api/phrases");
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(JSON.stringify({phrase: textToTranslate}));
             xhr.onreadystatechange = () => {
